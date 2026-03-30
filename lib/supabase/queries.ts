@@ -26,9 +26,21 @@ export async function getAppointmentsByDate(
 
   if (error) throw error
 
-  return (data ?? [])
-    .filter((row: any) => row.slots?.date === date)
-    .map((row: any) => ({
+  type RawRow = {
+    id: string
+    customer_name: string
+    customer_phone: string
+    status: string
+    paid: boolean
+    reminder_sent: boolean
+    services: { name: string; price: number } | null
+    staff: { name: string } | null
+    slots: { date: string; start_time: string } | null
+  }
+
+  return ((data ?? []) as RawRow[])
+    .filter((row) => row.slots?.date === date)
+    .map((row) => ({
       id: row.id,
       date: row.slots?.date ?? date,
       start_time: row.slots?.start_time ?? '00:00',
@@ -71,12 +83,17 @@ export async function getMonthStats(businessId: string, yearMonth: string) {
 
   if (error) throw error
 
-  const rows = data ?? []
+  type RawStatsRow = {
+    status: string
+    slots: { date: string } | null
+    services: { price: number } | null
+  }
+  const rows = (data ?? []) as RawStatsRow[]
   const total = rows.length
-  const completed = rows.filter((r: any) => r.status === 'completed').length
+  const completed = rows.filter((r) => r.status === 'completed').length
   const revenue = rows
-    .filter((r: any) => r.status === 'completed')
-    .reduce((sum: number, r: any) => sum + (r.services?.price ?? 0), 0)
+    .filter((r) => r.status === 'completed')
+    .reduce((sum: number, r) => sum + (r.services?.price ?? 0), 0)
 
   return { total, completed, revenue }
 }

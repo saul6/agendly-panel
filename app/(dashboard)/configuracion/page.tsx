@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -234,8 +233,8 @@ export default function ConfiguracionPage() {
       }
       setScheduleConfig(newConfig)
       setScheduleSuccess(`Horario actualizado — ${slots.length} slots generados para los próximos 7 días`)
-    } catch (err: any) {
-      setScheduleError(err.message ?? 'Error al guardar horario')
+    } catch (err: unknown) {
+      setScheduleError((err as Error).message ?? 'Error al guardar horario')
     } finally {
       setScheduleSaving(false)
     }
@@ -288,8 +287,8 @@ export default function ConfiguracionPage() {
 
       setScheduleConfig(prev => prev ? { ...prev, maxDate: slots[slots.length - 1].date } : prev)
       setExtendMsg(`${slots.length} slots generados`)
-    } catch (err: any) {
-      setExtendMsg(`Error: ${err.message ?? 'No se pudo extender'}`)
+    } catch (err: unknown) {
+      setExtendMsg(`Error: ${(err as Error).message ?? 'No se pudo extender'}`)
     } finally {
       setExtending(false)
     }

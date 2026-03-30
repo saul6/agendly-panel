@@ -142,8 +142,8 @@ export default function ServiciosPage() {
       if (business?.id) await refresh()
 
       closeDialog()
-    } catch (err: any) {
-      setFormError(err.message ?? 'Error inesperado')
+    } catch (err: unknown) {
+      setFormError((err as Error).message ?? 'Error inesperado')
     } finally {
       setSaving(false)
     }

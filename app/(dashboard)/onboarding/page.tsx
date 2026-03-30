@@ -47,7 +47,7 @@ const DAYS = [
 export default function OnboardingPage() {
   const { business, loading: bizLoading } = useBusiness()
   const { services } = useServices(business?.id)
-  const { staff, addStaff, refresh: refreshStaff } = useStaff(business?.id)
+  const { staff, addStaff } = useStaff(business?.id)
 
   // ── Staff dialog ──────────────────────────────────────────────────────────
   const [staffOpen, setStaffOpen] = useState(false)
@@ -165,8 +165,8 @@ export default function OnboardingPage() {
 
       setScheduleSuccess(`${slotsToInsert.length} slots generados para los próximos 7 días`)
       setHasSlots(true)
-    } catch (err: any) {
-      setScheduleError(err.message ?? 'Error al generar slots')
+    } catch (err: unknown) {
+      setScheduleError((err as Error).message ?? 'Error al generar slots')
     } finally {
       setScheduleSaving(false)
     }

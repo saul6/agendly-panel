@@ -61,7 +61,13 @@ export function Header() {
       .eq('status', 'confirmed')
       .then(({ data }) => {
         if (!data) return
-        const filtered = (data as any[])
+        type AptRow = {
+          id: string
+          customer_name: string
+          services: { name: string } | null
+          slots: { date: string; start_time: string } | null
+        }
+        const filtered = (data as AptRow[])
           .filter(a => a.slots?.date === today)
           .map(a => ({
             id: a.id,

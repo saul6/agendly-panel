@@ -153,8 +153,8 @@ export default function AgendaPage() {
       setNewAptOpen(false)
       // Refresh if the saved date matches the currently displayed date
       if (aptDate === toDateStr(selectedDate)) refresh()
-    } catch (err: any) {
-      setAptError(err.message ?? 'Error al guardar la cita')
+    } catch (err: unknown) {
+      setAptError((err as Error).message ?? 'Error al guardar la cita')
     } finally {
       setAptSaving(false)
     }
