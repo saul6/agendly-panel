@@ -8,6 +8,7 @@ const PLANS = [
     name: 'Básico',
     price: '347',
     description: 'Para negocios pequeños',
+    popular: false,
     features: [
       'Hasta 200 citas/mes',
       '1 empleado',
@@ -15,13 +16,13 @@ const PLANS = [
       'Recordatorios automáticos',
       'Soporte por correo',
     ],
-    highlighted: false,
   },
   {
     key: 'pro',
     name: 'Pro',
     price: '695',
     description: 'Para negocios en crecimiento',
+    popular: true,
     features: [
       'Hasta 500 citas/mes',
       'Hasta 5 empleados',
@@ -29,13 +30,13 @@ const PLANS = [
       'Reportes avanzados',
       'Soporte prioritario',
     ],
-    highlighted: true,
   },
   {
     key: 'negocio',
     name: 'Negocio',
     price: '1,159',
     description: 'Para cadenas y sucursales',
+    popular: false,
     features: [
       'Citas ilimitadas',
       'Empleados ilimitados',
@@ -43,7 +44,6 @@ const PLANS = [
       'API access',
       'Gerente de cuenta',
     ],
-    highlighted: false,
   },
 ]
 
@@ -127,7 +127,7 @@ export default function LandingPage() {
               key={plan.key}
               className="rounded-2xl border border-gray-200 bg-white p-8 flex flex-col transition-all duration-200 hover:border-purple-600 hover:shadow-lg hover:shadow-purple-200"
             >
-              {plan.highlighted && (
+              {plan.popular && (
                 <span className="text-xs font-semibold text-violet-600 uppercase tracking-wider mb-3">
                   Más popular
                 </span>
