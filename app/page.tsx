@@ -146,7 +146,7 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/registro">
+              <Link href={`/registro?plan=${plan.key}`}>
                 <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white">
                   Comenzar
                 </Button>

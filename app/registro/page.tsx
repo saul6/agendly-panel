@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -25,8 +25,11 @@ const BUSINESS_TYPES = [
   { value: 'otro',        label: 'Otro' },
 ]
 
-export default function RegistroPage() {
+function RegistroForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const plan = searchParams.get('plan') ?? ''
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -42,6 +45,8 @@ export default function RegistroPage() {
     setLoading(true)
     setError(null)
 
+    let userId: string | null = null
+
     try {
       const supabase = createClient()
 
@@ -53,20 +58,42 @@ export default function RegistroPage() {
       })
       if (authError) throw authError
       if (!data.user) throw new Error('No se pudo crear el usuario')
+      userId = data.user.id
 
-      // 2. Create business record via server API (uses service_role to bypass RLS)
+      // 2. Create business via server API (service_role bypasses RLS)
       const res = await fetch('/api/business/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: data.user.id, name: businessName, type: businessType }),
+        body: JSON.stringify({ user_id: userId, name: businessName, type: businessType }),
       })
       if (!res.ok) {
         const { error: bizError } = await res.json()
         throw new Error(bizError ?? 'Error al crear el negocio')
       }
 
+      // 3. If plan selected, go straight to Stripe checkout
+      if (plan) {
+        const checkoutRes = await fetch('/api/stripe/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan }),
+        })
+        if (checkoutRes.ok) {
+          const { url } = await checkoutRes.json()
+          if (url) { window.location.href = url; return }
+        }
+      }
+
       router.push('/planes')
     } catch (err: unknown) {
+      // Rollback: delete the auth user if business creation failed
+      if (userId) {
+        await fetch('/api/auth/delete-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId }),
+        })
+      }
       setError((err as Error).message ?? 'Error al registrarse')
       setLoading(false)
     }
@@ -186,5 +213,13 @@ export default function RegistroPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function RegistroPage() {
+  return (
+    <Suspense>
+      <RegistroForm />
+    </Suspense>
   )
 }
