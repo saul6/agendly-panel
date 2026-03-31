@@ -125,11 +125,7 @@ export default function LandingPage() {
           {PLANS.map((plan) => (
             <div
               key={plan.key}
-              className={`rounded-2xl border p-8 flex flex-col ${
-                plan.highlighted
-                  ? 'border-violet-600 shadow-xl shadow-violet-100 bg-violet-50'
-                  : 'border-gray-200 bg-white'
-              }`}
+              className="rounded-2xl border border-gray-200 bg-white p-8 flex flex-col transition-all duration-200 hover:border-purple-600 hover:shadow-lg hover:shadow-purple-200"
             >
               {plan.highlighted && (
                 <span className="text-xs font-semibold text-violet-600 uppercase tracking-wider mb-3">
@@ -151,13 +147,7 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Link href="/registro">
-                <Button
-                  className={`w-full ${
-                    plan.highlighted
-                      ? 'bg-violet-600 hover:bg-violet-700 text-white'
-                      : 'bg-gray-900 hover:bg-gray-800 text-white'
-                  }`}
-                >
+                <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white">
                   Comenzar
                 </Button>
               </Link>
