@@ -6,11 +6,15 @@ export interface Business {
   type: string                  // barbería | salón | consultorio | restaurante
   whatsapp_number: string
   plan: string
+  plan_status: string
   welcome_message: string | null
   timezone: string
   active: boolean
   created_at: string
   user_id: string | null
+  stripe_customer_id: string | null
+  stripe_account_id: string | null
+  stripe_subscription_id: string | null
 }
 
 export interface Service {
