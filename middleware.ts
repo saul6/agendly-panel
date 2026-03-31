@@ -37,7 +37,11 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
   const isLoginPage = pathname.startsWith('/login')
-  const isPublicPath = pathname === '/' || isLoginPage
+  const isPublicPath =
+    pathname === '/' ||
+    isLoginPage ||
+    pathname.startsWith('/registro') ||
+    pathname.startsWith('/planes')
 
   // Redirect unauthenticated users to login
   if (!user && !isPublicPath) {
