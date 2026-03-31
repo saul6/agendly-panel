@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createClient } from '@/lib/supabase/server'
-
-const PRICE_MAP: Record<string, string | undefined> = {
-  basic:   process.env.STRIPE_PRICE_BASIC,
-  pro:     process.env.STRIPE_PRICE_PRO,
-  negocio: process.env.STRIPE_PRICE_NEGOCIO,
-}
 
 export async function POST(req: NextRequest) {
   try {
+    const stripe = getStripe()
+
+    const PRICE_MAP: Record<string, string | undefined> = {
+      basic:   process.env.STRIPE_PRICE_BASIC,
+      pro:     process.env.STRIPE_PRICE_PRO,
+      negocio: process.env.STRIPE_PRICE_NEGOCIO,
+    }
+
     const { plan } = await req.json()
     const priceId = PRICE_MAP[plan]
     if (!priceId) {
