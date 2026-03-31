@@ -30,7 +30,7 @@ const PLANS = [
     features: [
       'Hasta 500 citas/mes',
       'Hasta 5 empleados',
-      'Pagos integrados (Conekta)',
+      'Cobros con tarjeta (Stripe)',
       'Reportes avanzados',
       'Soporte prioritario',
     ],

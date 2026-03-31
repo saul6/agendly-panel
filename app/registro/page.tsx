@@ -16,6 +16,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+const PLAN_INFO: Record<string, { name: string; price: string }> = {
+  basic:   { name: 'Básico',  price: '$347 MXN/mes' },
+  pro:     { name: 'Pro',     price: '$695 MXN/mes' },
+  negocio: { name: 'Negocio', price: '$1,159 MXN/mes' },
+}
+
 const BUSINESS_TYPES = [
   { value: 'barberia',    label: 'Barbería' },
   { value: 'salon',       label: 'Salón de belleza' },
@@ -110,11 +116,26 @@ function RegistroForm() {
           <p className="text-sm text-gray-500 mt-2">Crea tu cuenta para comenzar</p>
         </div>
 
+        {PLAN_INFO[plan] && (
+          <div className="mb-4 flex items-center justify-between bg-violet-50 border border-violet-100 rounded-xl px-4 py-3">
+            <div>
+              <p className="text-xs text-violet-500 font-medium uppercase tracking-wide">Plan seleccionado</p>
+              <p className="text-sm font-semibold text-violet-800">{PLAN_INFO[plan].name}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-bold text-violet-700">{PLAN_INFO[plan].price}</p>
+              <Link href="/" className="text-xs text-violet-400 hover:underline">Cambiar</Link>
+            </div>
+          </div>
+        )}
+
         <Card className="shadow-md border-gray-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-base">Crear cuenta</CardTitle>
             <CardDescription className="text-xs">
-              Completa los datos de tu negocio para comenzar
+              {PLAN_INFO[plan]
+                ? 'Completa tus datos — el siguiente paso es el pago con Stripe'
+                : 'Completa los datos de tu negocio para comenzar'}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -195,7 +216,7 @@ function RegistroForm() {
                 className="w-full bg-violet-600 hover:bg-violet-700 text-white"
                 disabled={loading}
               >
-                {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+                {loading ? 'Creando cuenta...' : PLAN_INFO[plan] ? 'Crear cuenta e ir al pago' : 'Crear cuenta'}
               </Button>
             </form>
 
