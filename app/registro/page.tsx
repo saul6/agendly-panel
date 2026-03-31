@@ -54,19 +54,16 @@ export default function RegistroPage() {
       if (authError) throw authError
       if (!data.user) throw new Error('No se pudo crear el usuario')
 
-      // 2. Create business record
-      const { error: bizError } = await supabase.from('businesses').insert({
-        user_id: data.user.id,
-        name: businessName,
-        type: businessType,
-        whatsapp_number: '',
-        plan: 'starter',
-        plan_status: 'inactive',
-        welcome_message: null,
-        timezone: 'America/Mexico_City',
-        active: false,
+      // 2. Create business record via server API (uses service_role to bypass RLS)
+      const res = await fetch('/api/business/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: data.user.id, name: businessName, type: businessType }),
       })
-      if (bizError) throw bizError
+      if (!res.ok) {
+        const { error: bizError } = await res.json()
+        throw new Error(bizError ?? 'Error al crear el negocio')
+      }
 
       router.push('/planes')
     } catch (err: unknown) {
