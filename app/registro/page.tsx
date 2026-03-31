@@ -83,7 +83,7 @@ export default function RegistroPage() {
             <span className="text-violet-600 text-xl leading-none">✦</span>
             <span className="font-bold text-xl">Agendly</span>
           </Link>
-          <p className="text-sm text-gray-500 mt-2">Crea tu cuenta gratis — 14 días sin costo</p>
+          <p className="text-sm text-gray-500 mt-2">Crea tu cuenta para comenzar</p>
         </div>
 
         <Card className="shadow-md border-gray-200">

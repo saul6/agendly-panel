@@ -15,6 +15,7 @@ export interface Business {
   stripe_customer_id: string | null
   stripe_account_id: string | null
   stripe_subscription_id: string | null
+  reminders_enabled: boolean
 }
 
 export interface Service {

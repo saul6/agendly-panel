@@ -63,7 +63,7 @@ export default function LandingPage() {
             </Link>
             <Link href="/registro">
               <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white">
-                Comenzar gratis
+                Comenzar
               </Button>
             </Link>
           </div>
@@ -86,7 +86,7 @@ export default function LandingPage() {
         <div className="flex items-center justify-center gap-4">
           <Link href="/registro">
             <Button size="lg" className="bg-violet-600 hover:bg-violet-700 text-white px-8 h-12 text-base">
-              Comenzar 14 días gratis
+              Comenzar
             </Button>
           </Link>
           <Link href="/login">
@@ -95,7 +95,7 @@ export default function LandingPage() {
             </Button>
           </Link>
         </div>
-        <p className="text-sm text-gray-400 mt-4">Sin tarjeta requerida · Cancela cuando quieras</p>
+        <p className="text-sm text-gray-400 mt-4">Cancela cuando quieras</p>
       </section>
 
       {/* Features */}
@@ -103,7 +103,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center">
           {[
             { emoji: '📱', title: 'Solo WhatsApp', desc: 'Tus clientes agendan desde donde ya están. Sin apps, sin descargas.' },
-            { emoji: '💳', title: 'Cobros automáticos', desc: 'Acepta tarjeta, SPEI y OXXO Pay. El dinero llega directo a tu banco.' },
+            { emoji: '💳', title: 'Cobros automáticos', desc: 'Acepta tarjeta de crédito y débito vía Stripe. El dinero llega directo a tu banco.' },
             { emoji: '⏰', title: 'Recordatorios', desc: 'Reduce el 70% de los no-shows con recordatorios automáticos por WhatsApp.' },
           ].map(f => (
             <div key={f.title} className="p-6">

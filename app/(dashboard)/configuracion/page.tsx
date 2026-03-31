@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Save, Building2, MessageSquare, Phone, CheckCircle2, CalendarDays, RefreshCw, Pencil } from 'lucide-react'
+import { Save, Building2, MessageSquare, Phone, CheckCircle2, CalendarDays, RefreshCw, Pencil, Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,6 +22,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog'
+import { Switch } from '@/components/ui/switch'
 import { createClient } from '@/lib/supabase/client'
 import { useBusiness } from '@/hooks/use-business'
 
@@ -86,6 +87,10 @@ export default function ConfiguracionPage() {
   const [extending, setExtending] = useState(false)
   const [extendMsg, setExtendMsg] = useState<string | null>(null)
 
+  // ── Recordatorios ────────────────────────────────────────────────────────────
+  const [remindersEnabled, setRemindersEnabled] = useState(true)
+  const [remindersSaving, setRemindersSaving] = useState(false)
+
   // Populate form when business loads
   useEffect(() => {
     if (business) {
@@ -95,6 +100,7 @@ export default function ConfiguracionPage() {
         whatsapp_number: business.whatsapp_number ?? '',
         welcome_message: business.welcome_message ?? '',
       })
+      setRemindersEnabled(business.reminders_enabled ?? true)
     }
   }, [business])
 
@@ -238,6 +244,14 @@ export default function ConfiguracionPage() {
     } finally {
       setScheduleSaving(false)
     }
+  }
+
+  async function handleToggleReminders(enabled: boolean) {
+    setRemindersEnabled(enabled)
+    setRemindersSaving(true)
+    const { error } = await saveBusiness({ reminders_enabled: enabled })
+    setRemindersSaving(false)
+    if (error) setRemindersEnabled(!enabled) // revert on error
   }
 
   async function handleExtendWeek() {
@@ -512,6 +526,41 @@ export default function ConfiguracionPage() {
                 {extendMsg}
               </p>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ── Recordatorios automáticos ───────────────────────────────────────── */}
+      {business && (
+        <Card className="border-gray-200">
+          <CardHeader className="pb-3 pt-5 px-5">
+            <div className="flex items-center gap-2">
+              <Bell className="w-4 h-4 text-violet-600" />
+              <CardTitle className="text-sm font-semibold text-gray-800">Recordatorios automáticos</CardTitle>
+            </div>
+            <CardDescription className="text-xs">
+              Envía recordatorios por WhatsApp 24 h y 1 h antes de cada cita
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="px-5 pb-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-800">
+                  {remindersEnabled ? 'Activados' : 'Desactivados'}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {remindersEnabled
+                    ? 'Tus clientes recibirán recordatorio 24 h y 1 h antes de su cita'
+                    : 'No se enviarán recordatorios a los clientes'}
+                </p>
+              </div>
+              <Switch
+                checked={remindersEnabled}
+                onCheckedChange={handleToggleReminders}
+                disabled={remindersSaving}
+                className="data-[state=checked]:bg-violet-600"
+              />
+            </div>
           </CardContent>
         </Card>
       )}
