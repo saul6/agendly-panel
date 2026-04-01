@@ -20,11 +20,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Plan inválido o precio no configurado' }, { status: 400 })
     }
 
+    // Try cookie-based session first; fall back to Bearer token (e.g. right after signUp)
     const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    let user = (await supabase.auth.getUser()).data.user
+
+    if (!user) {
+      const bearer = req.headers.get('Authorization')?.replace('Bearer ', '')
+      if (bearer) {
+        const { createClient: createAdmin } = await import('@supabase/supabase-js')
+        const admin = createAdmin(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!
+        )
+        user = (await admin.auth.getUser(bearer)).data.user ?? null
+      }
+    }
+
     if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
-    const { data: business } = await supabase
+    const admin = (await import('@/lib/supabase/admin')).createAdminClient()
+    const { data: business } = await admin
       .from('businesses')
       .select('id, stripe_customer_id')
       .eq('user_id', user.id)
@@ -40,7 +55,7 @@ export async function POST(req: NextRequest) {
         metadata: { business_id: business.id, user_id: user.id },
       })
       customerId = customer.id
-      await supabase
+      await admin
         .from('businesses')
         .update({ stripe_customer_id: customerId })
         .eq('id', business.id)

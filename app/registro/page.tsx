@@ -79,26 +79,39 @@ function RegistroForm() {
 
       // 3. If plan selected, go straight to Stripe checkout
       if (plan) {
+        // Pass the access token — cookies aren't set yet right after signUp
+        const { data: { session } } = await supabase.auth.getSession()
         const checkoutRes = await fetch('/api/stripe/checkout', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {}),
+          },
           body: JSON.stringify({ plan }),
         })
-        if (checkoutRes.ok) {
-          const { url } = await checkoutRes.json()
-          if (url) { window.location.href = url; return }
-        }
+        const checkoutData = await checkoutRes.json()
+        if (!checkoutRes.ok) throw new Error(checkoutData.error ?? 'Error al iniciar el pago')
+        window.location.href = checkoutData.url
+        return
       }
 
       router.push('/planes')
     } catch (err: unknown) {
-      // Rollback: delete the auth user if business creation failed
+      // Only rollback the auth user if the business wasn't created yet
+      // (if business creation succeeded, keep the user — they can pay later via /planes)
       if (userId) {
-        await fetch('/api/auth/delete-user', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: userId }),
-        })
+        const { data: existing } = await createClient()
+          .from('businesses')
+          .select('id')
+          .eq('user_id', userId)
+          .maybeSingle()
+        if (!existing) {
+          await fetch('/api/auth/delete-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId }),
+          })
+        }
       }
       setError((err as Error).message ?? 'Error al registrarse')
       setLoading(false)
