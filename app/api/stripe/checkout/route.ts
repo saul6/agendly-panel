@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
         .eq('id', business.id)
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+    const appUrl = process.env.NEXT_PUBLIC_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
