@@ -10,10 +10,18 @@ import {
   Settings,
   Rocket,
   LogOut,
+  ShoppingBag,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { useBusiness } from '@/hooks/use-business'
+
+const POS_SUBITEMS = [
+  { href: '/pos',             label: 'Cobrar' },
+  { href: '/pos/productos',   label: 'Productos' },
+  { href: '/pos/descuentos',  label: 'Descuentos' },
+  { href: '/pos/historial',   label: 'Historial' },
+]
 
 const NAV_ITEMS = [
   { href: '/agenda',        label: 'Agenda',           icon: CalendarDays },
@@ -88,6 +96,40 @@ export function Sidebar() {
             {label}
           </Link>
         ))}
+
+        {/* POS section */}
+        <div className="pt-3 mt-3 border-t border-white/10">
+          <Link
+            href="/pos"
+            className={cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              pathname.startsWith('/pos')
+                ? 'bg-violet-800 text-white'
+                : 'text-violet-200/80 hover:bg-white/10 hover:text-white'
+            )}
+          >
+            <ShoppingBag className="w-5 h-5 flex-shrink-0" />
+            POS
+          </Link>
+          {pathname.startsWith('/pos') && (
+            <div className="ml-8 mt-1 space-y-0.5">
+              {POS_SUBITEMS.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    'block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                    pathname === href
+                      ? 'text-white bg-violet-700'
+                      : 'text-violet-300/70 hover:bg-white/10 hover:text-white'
+                  )}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="pt-3 mt-3 border-t border-white/10">
           <Link
