@@ -65,6 +65,9 @@ function RegistroForm() {
       if (authError) throw authError
       if (!data.user) throw new Error('No se pudo crear el usuario')
       userId = data.user.id
+      // Grab access token from signUp response — getSession() may return null
+      // when email confirmation is enabled
+      const accessToken = data.session?.access_token ?? null
 
       // 2. Create business via server API (service_role bypasses RLS)
       const res = await fetch('/api/business/create', {
@@ -77,25 +80,18 @@ function RegistroForm() {
         throw new Error(bizError ?? 'Error al crear el negocio')
       }
 
-      // 3. If plan selected, go straight to Stripe checkout
-      if (plan) {
-        // Pass the access token — cookies aren't set yet right after signUp
-        const { data: { session } } = await supabase.auth.getSession()
-        const checkoutRes = await fetch('/api/stripe/checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {}),
-          },
-          body: JSON.stringify({ plan }),
-        })
-        const checkoutData = await checkoutRes.json()
-        if (!checkoutRes.ok) throw new Error(checkoutData.error ?? 'Error al iniciar el pago')
-        window.location.href = checkoutData.url
-        return
-      }
-
-      router.push('/planes')
+      // 3. Redirect to Stripe checkout
+      const checkoutRes = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ plan: plan || 'basic' }),
+      })
+      const checkoutData = await checkoutRes.json()
+      if (!checkoutRes.ok) throw new Error(checkoutData.error ?? 'Error al iniciar el pago')
+      window.location.href = checkoutData.url
     } catch (err: unknown) {
       // Only rollback the auth user if the business wasn't created yet
       // (if business creation succeeded, keep the user — they can pay later via /planes)

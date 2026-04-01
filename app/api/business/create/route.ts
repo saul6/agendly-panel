@@ -19,12 +19,9 @@ export async function POST(req: NextRequest) {
         user_id,
         name,
         type,
-        whatsapp_number: '',
-        plan: 'starter',
+        plan: 'basic',
         plan_status: 'inactive',
-        welcome_message: null,
         timezone: 'America/Mexico_City',
-        active: false,
       })
       .select()
       .single()
