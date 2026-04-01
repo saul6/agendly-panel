@@ -65,8 +65,8 @@ export default function POSPage() {
       setBusinessId(biz.id)
       setBusinessName(biz.name)
       const [{ data: svcs }, { data: prods }] = await Promise.all([
-        supabase.from('services').select('id, name').eq('business_id', biz.id).eq('is_active', true),
-        supabase.from('products').select('id, name, price, category').eq('business_id', biz.id).eq('active', true),
+        supabase.from('services').select('id, name, price').eq('business_id', biz.id).eq('active', true).order('name'),
+        supabase.from('products').select('id, name, price, category').eq('business_id', biz.id).eq('active', true).order('name'),
       ])
       setServices(svcs ?? [])
       setProducts(prods ?? [])
@@ -209,7 +209,9 @@ export default function POSPage() {
                   className="text-left p-4 rounded-xl border border-gray-200 hover:border-violet-400 hover:bg-violet-50 transition-all"
                 >
                   <p className="font-medium text-sm text-gray-900">{s.name}</p>
-                  <p className="text-xs text-violet-600 mt-1">${((s as { price?: number }).price ?? 0).toFixed(2)}</p>
+                  <p className="text-xs text-violet-600 mt-1">
+                    {(s as { price?: number }).price != null ? `$${(s as { price?: number }).price!.toFixed(2)}` : 'A convenir'}
+                  </p>
                 </button>
               ))}
               {services.length === 0 && <p className="text-sm text-gray-400 col-span-3">No hay servicios activos</p>}
