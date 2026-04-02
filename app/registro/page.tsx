@@ -239,7 +239,14 @@ function RegistroForm() {
         </Card>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          Al registrarte aceptas nuestros términos de servicio.
+          Al usar Agendly aceptas nuestros{' '}
+          <Link href="/terms" className="text-[#7C3AED] hover:underline">
+            Términos de Servicio
+          </Link>{' '}
+          y{' '}
+          <Link href="/privacy" className="text-[#7C3AED] hover:underline">
+            Política de Privacidad
+          </Link>
         </p>
       </div>
     </div>
