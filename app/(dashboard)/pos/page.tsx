@@ -191,9 +191,9 @@ export default function POSPage() {
   const paymentLabels = { cash: 'Efectivo', card: 'Tarjeta', transfer: 'Transferencia' }
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex gap-0 overflow-hidden">
+    <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-3.5rem)] gap-0 overflow-hidden -m-4 sm:-m-6">
       {/* Left: catalog */}
-      <div className="flex-1 overflow-y-auto p-6 border-r border-gray-100">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 border-b lg:border-b-0 lg:border-r border-gray-100">
         <h1 className="text-lg font-bold text-gray-900 mb-4">Punto de Venta</h1>
         <Tabs defaultValue="services">
           <TabsList className="mb-4">
@@ -237,7 +237,7 @@ export default function POSPage() {
       </div>
 
       {/* Right: cart */}
-      <div className="w-96 flex flex-col bg-white">
+      <div className="w-full lg:w-96 flex flex-col bg-white border-t lg:border-t-0">
         <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100">
           <ShoppingCart className="w-4 h-4 text-violet-600" />
           <span className="font-semibold text-sm text-gray-800">Carrito</span>

@@ -168,7 +168,7 @@ export default function AgendaPage() {
           <div><Skeleton className="h-6 w-24 mb-1" /><Skeleton className="h-4 w-48" /></div>
           <Skeleton className="h-9 w-28" />
         </div>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-24 rounded-lg" />)}
         </div>
         <Skeleton className="h-64 rounded-lg" />
@@ -285,37 +285,39 @@ export default function AgendaPage() {
               <p className="text-xs text-gray-400 mt-1 max-w-xs">Las citas de WhatsApp aparecerán aquí automáticamente</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-transparent border-gray-100">
-                  <TableHead className="w-20 text-xs">Hora</TableHead>
-                  <TableHead className="text-xs">Cliente</TableHead>
-                  <TableHead className="text-xs">Servicio</TableHead>
-                  <TableHead className="text-xs">Empleado</TableHead>
-                  <TableHead className="text-xs text-right">Precio</TableHead>
-                  <TableHead className="text-xs">Estado</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {appointments.map(apt => (
-                  <TableRow key={apt.id} className="hover:bg-gray-50/60 transition-colors border-gray-100 cursor-default">
-                    <TableCell className="font-mono text-sm font-semibold text-gray-900 py-3.5">{apt.start_time}</TableCell>
-                    <TableCell className="py-3.5">
-                      <p className="text-sm font-medium text-gray-900">{apt.customer_name}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{apt.customer_phone}</p>
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-700 py-3.5">{apt.service_name}</TableCell>
-                    <TableCell className="text-sm text-gray-600 py-3.5">{apt.staff_name}</TableCell>
-                    <TableCell className="text-right py-3.5">
-                      <span className="text-sm font-semibold text-gray-900">
-                        {apt.service_price != null ? `$${apt.service_price.toLocaleString('es-MX')}` : '—'}
-                      </span>
-                    </TableCell>
-                    <TableCell className="py-3.5"><StatusBadge status={apt.status} /></TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent border-gray-100">
+                    <TableHead className="w-20 text-xs">Hora</TableHead>
+                    <TableHead className="text-xs">Cliente</TableHead>
+                    <TableHead className="text-xs">Servicio</TableHead>
+                    <TableHead className="text-xs">Empleado</TableHead>
+                    <TableHead className="text-xs text-right">Precio</TableHead>
+                    <TableHead className="text-xs">Estado</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {appointments.map(apt => (
+                    <TableRow key={apt.id} className="hover:bg-gray-50/60 transition-colors border-gray-100 cursor-default">
+                      <TableCell className="font-mono text-sm font-semibold text-gray-900 py-3.5">{apt.start_time}</TableCell>
+                      <TableCell className="py-3.5">
+                        <p className="text-sm font-medium text-gray-900">{apt.customer_name}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{apt.customer_phone}</p>
+                      </TableCell>
+                      <TableCell className="text-sm text-gray-700 py-3.5">{apt.service_name}</TableCell>
+                      <TableCell className="text-sm text-gray-600 py-3.5">{apt.staff_name}</TableCell>
+                      <TableCell className="text-right py-3.5">
+                        <span className="text-sm font-semibold text-gray-900">
+                          {apt.service_price != null ? `$${apt.service_price.toLocaleString('es-MX')}` : '—'}
+                        </span>
+                      </TableCell>
+                      <TableCell className="py-3.5"><StatusBadge status={apt.status} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </Card>
       </div>

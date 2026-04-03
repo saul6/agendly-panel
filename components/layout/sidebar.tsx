@@ -46,7 +46,12 @@ function getInitials(name: string): string {
     .join('')
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean
+  onClose: () => void
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname  = usePathname()
   const router    = useRouter()
   const { business } = useBusiness()
@@ -57,6 +62,11 @@ export function Sidebar() {
       setUserEmail(data.user?.email ?? null)
     })
   }, [])
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    onClose()
+  }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleLogout() {
     await createClient().auth.signOut()
@@ -72,7 +82,16 @@ export function Sidebar() {
   const initials    = business?.name ? getInitials(business.name) : (userEmail?.[0]?.toUpperCase() ?? '?')
 
   return (
-    <aside className="w-64 flex flex-col h-screen bg-sidebar text-white flex-shrink-0">
+    <aside
+      className={cn(
+        // Base — mobile: fixed slide-in from left
+        'fixed inset-y-0 left-0 z-40 w-64 flex flex-col h-screen bg-sidebar text-white flex-shrink-0',
+        'transition-transform duration-300 ease-in-out',
+        isOpen ? 'translate-x-0' : '-translate-x-full',
+        // Desktop: always visible, back in normal flow
+        'lg:relative lg:inset-auto lg:z-auto lg:translate-x-0'
+      )}
+    >
       {/* Logo */}
       <Link href="/agenda" className="h-16 flex items-center px-6 border-b border-white/10 hover:opacity-80 transition-opacity">
         <span className="text-violet-300 text-xl mr-2 leading-none">✦</span>

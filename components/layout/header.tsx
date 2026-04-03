@@ -1,12 +1,31 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Bell, ChevronDown, Settings, LogOut, Clock } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { Bell, ChevronDown, Settings, LogOut, Clock, Menu } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { useBusiness } from '@/hooks/use-business'
+
+// ── Page name map ─────────────────────────────────────────────────────────────
+
+const PAGE_NAMES: Record<string, string> = {
+  '/agenda':        'Agenda',
+  '/servicios':     'Servicios',
+  '/reportes':      'Reportes',
+  '/configuracion': 'Configuración',
+  '/pos':           'POS — Cobrar',
+  '/pos/productos': 'POS — Productos',
+  '/pos/descuentos':'POS — Descuentos',
+  '/pos/historial': 'POS — Historial',
+  '/onboarding':    'Configurar negocio',
+}
+
+function usePageName() {
+  const pathname = usePathname()
+  return PAGE_NAMES[pathname] ?? ''
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -37,9 +56,14 @@ function useClickOutside(ref: React.RefObject<HTMLElement | null>, onClose: () =
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function Header() {
+interface HeaderProps {
+  onMenuToggle: () => void
+}
+
+export function Header({ onMenuToggle }: HeaderProps) {
   const router = useRouter()
   const { business } = useBusiness()
+  const pageName = usePageName()
 
   // User email
   const [userEmail, setUserEmail] = useState<string | null>(null)
@@ -103,10 +127,29 @@ export function Header() {
   })
 
   return (
-    <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0">
-      <p className="text-sm text-gray-500 capitalize">{today}</p>
+    <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 flex-shrink-0 gap-3">
 
-      <div className="flex items-center gap-1">
+      {/* Left: hamburger (mobile) + page name (mobile) / date (desktop) */}
+      <div className="flex items-center gap-3 min-w-0">
+        {/* Hamburger — only on mobile */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onMenuToggle}
+          className="lg:hidden text-gray-500 hover:text-gray-700 flex-shrink-0 -ml-1"
+          aria-label="Abrir menú"
+        >
+          <Menu className="w-5 h-5" />
+        </Button>
+
+        {/* Page name on mobile, date on desktop */}
+        {pageName && (
+          <p className="text-sm font-semibold text-gray-800 truncate lg:hidden">{pageName}</p>
+        )}
+        <p className="text-sm text-gray-500 capitalize hidden lg:block">{today}</p>
+      </div>
+
+      <div className="flex items-center gap-1 flex-shrink-0">
 
         {/* ── Bell ─────────────────────────────────────────────────────────── */}
         <div ref={bellRef} className="relative">
@@ -125,7 +168,7 @@ export function Header() {
           </Button>
 
           {bellOpen && (
-            <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
+            <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
               <div className="px-4 py-3 border-b border-gray-100">
                 <p className="text-sm font-semibold text-gray-800">Citas pendientes hoy</p>
               </div>
@@ -156,7 +199,7 @@ export function Header() {
         </div>
 
         {/* ── User menu ────────────────────────────────────────────────────── */}
-        <div ref={userRef} className="relative ml-2">
+        <div ref={userRef} className="relative ml-1">
           <button
             onClick={() => setUserOpen(v => !v)}
             className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 transition-colors"
@@ -164,7 +207,7 @@ export function Header() {
             <div className="w-7 h-7 rounded-full bg-violet-100 flex items-center justify-center text-violet-700 text-xs font-semibold select-none">
               {initial}
             </div>
-            <span className="font-medium max-w-[120px] truncate">{displayName}</span>
+            <span className="font-medium max-w-[80px] sm:max-w-[120px] truncate hidden sm:block">{displayName}</span>
             <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${userOpen ? 'rotate-180' : ''}`} />
           </button>
 
