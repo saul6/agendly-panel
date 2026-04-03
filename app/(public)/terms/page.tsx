@@ -307,7 +307,7 @@ export default function TermsPage() {
 
         {/* Footer link */}
         <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <p>© 2026 DuoMind Solutions. Todos los derechos reservados.</p>
+          <p>© 2026 Saul Luviano Sanchez · DuoMind Solutions · Agendly</p>
           <Link href="/privacy" className="text-[#7C3AED] hover:underline font-medium">
             Ver Política de Privacidad →
           </Link>

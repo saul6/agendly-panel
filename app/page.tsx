@@ -162,7 +162,7 @@ export default function LandingPage() {
           <span className="text-violet-500">✦</span>
           <span className="font-semibold text-gray-600">Agendly</span>
         </div>
-        DuoMind Solutions · Zamora, Michoacán · México
+        Agendly es un producto de DuoMind Solutions · Saul Luviano Sanchez
       </footer>
     </div>
   )
