@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 export const metadata: Metadata = {
   title: "Agendly — Panel de Administración",
   description: "Gestiona tu agenda, servicios e ingresos desde un solo lugar.",
+  verification: {
+    facebook: "0nvntig6e9q8e4pkli7r6v9vgpxajq",
+  },
 };
 
 export default function RootLayout({
